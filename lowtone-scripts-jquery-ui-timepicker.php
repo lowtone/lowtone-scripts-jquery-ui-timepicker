@@ -22,8 +22,24 @@ namespace lowtone\scripts\jquery\ui\timepicker {
 	$GLOBALS["lowtone_scripts_jquery_ui_timepicker"] = Package::init(array(
 			Package::INIT_PACKAGES => array("lowtone\\scripts"),
 			Package::INIT_SUCCESS => function() {
+
+				wp_register_style("jquery-timepicker", LIB_URL . "/lowtone-scripts-jquery-ui-timepicker/assets/styles/timepicker.css", array(), "1.0.0");
+				wp_register_style("jquery-timepicker-admin", LIB_URL . "/lowtone-scripts-jquery-ui-timepicker/assets/styles/admin.css", array(), "1.0.0");
+
+				add_filter("script_loader_src", function($src, $handle) {
+					if ("jquery-timepicker" != $handle)
+						return $src;
+
+					wp_enqueue_style("jquery-timepicker");
+
+					if (is_admin())
+						wp_enqueue_style("jquery-timepicker-admin");
+
+					return $src;
+				}, 10, 2);
+
 				return array(
-						"registered" => \lowtone\scripts\register(__DIR__ . "/assets/scripts", array(), "1.2.2")
+						"registered" => \lowtone\scripts\register(__DIR__ . "/assets/scripts", array("jquery-ui-slider", "jquery-ui-datepicker"), "1.2.2")
 					);
 			}
 		));
